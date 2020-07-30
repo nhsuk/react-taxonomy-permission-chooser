@@ -1,0 +1,6 @@
+node_modules/
+.yalc/
+yalc.lock
+git
+build/
+dist/
