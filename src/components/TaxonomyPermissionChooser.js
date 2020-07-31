@@ -19,7 +19,7 @@ function TaxonomyPermissionChooser(props) {
           <h1>TaxonomyPermissionChooser</h1>
           <input onClick={toggleChooser} type="button" value="Close" />
           {props.vocabularyGroups && props.vocabularyGroups.map((group) => (
-            <VocabularyGroup group={group} />
+            <VocabularyGroup action={props.action} taxonomyPermissionJson={props.taxonomyPermissionJson} group={group} />
           ))}
         </>
       )}

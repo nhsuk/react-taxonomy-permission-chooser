@@ -12,7 +12,11 @@ function TaxonomyPermissionAction(props) {
           <li key={`${props.action.code}-${group.code}`}>{group.label}:</li>
         ))}
       </ul>
-      <TaxonomyPermissionChooser vocabularyGroups={props.vocabularyGroups} />
+      <TaxonomyPermissionChooser
+        actionCode={props.action.code}
+        taxonomyPermissionJson={props.taxonomyPermissionJson}
+        vocabularyGroups={props.vocabularyGroups}
+      />
     </div>
   );
 }
