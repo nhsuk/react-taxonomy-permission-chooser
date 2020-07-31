@@ -1,0 +1,45 @@
+{
+  "actions": [{
+    "label":"View",
+    "code":"view"
+  }, {
+    "label":"Download",
+    "code":"download"
+  }],
+  "vocabularyGroups": [{
+    "label":"Role",
+    "code":"role",
+    "type":"vocabulary",
+    "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim",
+    "children":[
+      {"label":"Standard User","code":"standard","type":"term","children":[]},
+      {"label":"Professional User","code":"professional","type":"term","children":[]},
+      {"label":"Campaign Supporter","code":"supporter","type":"term","children":[]}
+    ]
+  },
+  {
+    "label":"Region",
+    "code":"region",
+    "type":"vocabulary",
+    "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim",
+    "children":[
+      {"label":"East of England","code":"east","type":"term","children":[]},
+      {"label":"South East","code":"southeast","type":"term","children":[]},
+      {"label":"South West","code":"southwest","type":"term","children":[]},
+      {"label":"Midlands","code":"midlands","type":"term","children":[]},
+      {"label":"North West","code":"northwest","type":"term","children":[]},
+      {"label":"North East and Yorkshire","code":"northeast","type":"term","children":[]},
+      {"label":"London","code":"london","type":"term","children":[]}
+    ]
+  },
+  {
+    "label":"Organisation",
+    "code":"org",
+    "type":"vocabulary",
+    "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim",
+    "children":[
+      {"label":"Ministry of Defence","code":"mod","type":"term","children":[]},
+      {"label":"Public Health England","code":"phe","type":"term","children":[]}
+    ]
+  }]
+}
