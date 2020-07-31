@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PermissionTaxonomy from './components/PermissionTaxonomy';
+
+import TaxonomyPermissionPanel from './components/TaxonomyPermissionPanel';
+
 
 ReactDOM.render(
-  <PermissionTaxonomy />,
+  <TaxonomyPermissionPanel
+  />,
   document.getElementById('root'),
 );
