@@ -5,6 +5,7 @@
   "main": "dist/react-taxonomy-permission.cjs.js",
   "module": "dist/react-taxonomy-permission.esm.js",
   "peerDependencies": {
+    "prop-types": "^15.6.2",
     "react-dom": "^16.4.0",
     "react-jss": "^10.3.0",
     "react": "^16.4.0"
