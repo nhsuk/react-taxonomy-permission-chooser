@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { vocabularyGroupPropTypes } from '../helpers/customPropsType';
 
 function VocabularyGroup(props) {
+  // Use the json string data in the dom to define the default checkbox state
   function isChecked(itemCode) {
     if (props.taxonomyPermissionJson) {
       const taxonomyPermissionValues = JSON.parse(props.taxonomyPermissionJson.value);
@@ -12,6 +13,7 @@ function VocabularyGroup(props) {
     return false;
   }
 
+  // Update json string in the dom when user check/uncheck the checkbox
   function updatePermission(e) {
     if (props.taxonomyPermissionJson) {
       const taxonomyPermissionValues = JSON.parse(props.taxonomyPermissionJson.value);

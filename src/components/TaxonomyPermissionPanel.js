@@ -15,6 +15,7 @@ function TaxonomyPermissionPanel(props) {
   gloablPermissionField.value = permission;
   inheritPermissionField.checked = inheritPermission;
 
+  // initialise json string in the dom if empty
   if (taxonomyPermissionJson) {
     if (taxonomyPermissionJson.value === '') {
       const taxonomyPermissionValues = {};
@@ -25,6 +26,7 @@ function TaxonomyPermissionPanel(props) {
     }
   }
 
+  // Show TaxonomyPermissionAction if restrited permission
   function onChangeGlobalPermission(e) {
     setPermission(e.target.value);
     if (gloablPermissionField) {
