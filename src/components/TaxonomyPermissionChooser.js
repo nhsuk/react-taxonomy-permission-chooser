@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import VocabularyGroup from './VocabularyGroup';
-import { actionPropTypes, vocabularyGroupsPropTypes } from '../helpers/customPropsType';
+import { vocabularyGroupsPropTypes } from '../helpers/customPropsType';
 
 function TaxonomyPermissionChooser(props) {
   const [showChooser, setShowChooser] = useState(false);
@@ -21,7 +21,7 @@ function TaxonomyPermissionChooser(props) {
           <h1>TaxonomyPermissionChooser</h1>
           <input onClick={toggleChooser} type="button" value="Close" />
           {props.vocabularyGroups && props.vocabularyGroups.map((group) => (
-            <VocabularyGroup action={props.action} taxonomyPermissionJson={props.taxonomyPermissionJson} group={group} />
+            <VocabularyGroup actionCode={props.actionCode} taxonomyPermissionJson={props.taxonomyPermissionJson} group={group} />
           ))}
         </>
       )}
@@ -31,12 +31,11 @@ function TaxonomyPermissionChooser(props) {
 
 TaxonomyPermissionChooser.propTypes = {
   taxonomyPermissionJson: PropTypes.string.isRequired,
-  action: actionPropTypes,
+  actionCode: PropTypes.string.isRequired,
   vocabularyGroups: vocabularyGroupsPropTypes,
 };
 
 TaxonomyPermissionChooser.defaultProps = {
-  action: {},
   vocabularyGroups: [],
 };
 

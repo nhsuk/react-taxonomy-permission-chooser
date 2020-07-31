@@ -8,7 +8,9 @@ function VocabularyGroup(props) {
   function isChecked(itemCode) {
     if (props.taxonomyPermissionJson) {
       const taxonomyPermissionValues = JSON.parse(props.taxonomyPermissionJson.value);
-      return taxonomyPermissionValues[props.actionCode].includes(itemCode);
+      if (props.actionCode in taxonomyPermissionValues) {
+        return taxonomyPermissionValues[props.actionCode].includes(itemCode);
+      }
     }
     return false;
   }
