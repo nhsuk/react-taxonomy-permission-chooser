@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import TaxonomyPermissionAction from './TaxonomyPermissionAction';
+import { actionsPropTypes, vocabularyGroupsPropTypes } from '../helpers/customPropsType';
 
 function TaxonomyPermissionPanel(props) {
   const [permission, setPermission] = useState(props.permission);
@@ -77,8 +78,9 @@ TaxonomyPermissionPanel.propTypes = {
   inheritPermission: PropTypes.bool,
   globalPermissionFieldId: PropTypes.string,
   inheritPermissionFieldId: PropTypes.string,
-  // TO DO
-  // vocabylaryGroups: PropTypes.shape({}).isRequired,
+  taxonomyPermissionJsonId: PropTypes.string,
+  actions: actionsPropTypes,
+  vocabularyGroups: vocabularyGroupsPropTypes,
 };
 
 TaxonomyPermissionPanel.defaultProps = {
@@ -86,6 +88,9 @@ TaxonomyPermissionPanel.defaultProps = {
   inheritPermission: false,
   globalPermissionFieldId: null,
   inheritPermissionFieldId: null,
+  taxonomyPermissionJsonId: null,
+  actions: [],
+  vocabularyGroups: [],
 };
 
 export default TaxonomyPermissionPanel;

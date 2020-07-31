@@ -1,9 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import TaxonomyPermissionChooser from './TaxonomyPermissionChooser';
+import { actionPropTypes, vocabularyGroupsPropTypes } from '../helpers/customPropsType';
 
 function TaxonomyPermissionAction(props) {
-
   return (
     <div>
       {props.action.label}:
@@ -20,5 +21,16 @@ function TaxonomyPermissionAction(props) {
     </div>
   );
 }
+
+TaxonomyPermissionAction.propTypes = {
+  taxonomyPermissionJson: PropTypes.string.isRequired,
+  action: actionPropTypes,
+  vocabularyGroups: vocabularyGroupsPropTypes,
+};
+
+TaxonomyPermissionAction.defaultProps = {
+  action: {},
+  vocabularyGroups: [],
+};
 
 export default TaxonomyPermissionAction;

@@ -1,4 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { vocabularyGroupPropTypes } from '../helpers/customPropsType';
 
 function VocabularyGroup(props) {
   function isChecked(itemCode) {
@@ -35,5 +38,13 @@ function VocabularyGroup(props) {
     </div>
   );
 }
+
+VocabularyGroup.propTypes = {
+  taxonomyPermissionJson: PropTypes.string.isRequired,
+  group: vocabularyGroupPropTypes,
+  actionCode: PropTypes.string.isRequired,
+};
+
+VocabularyGroup.defaultProps = { group: {} };
 
 export default VocabularyGroup;
