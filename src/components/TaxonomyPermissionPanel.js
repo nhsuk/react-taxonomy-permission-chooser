@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import TaxonomyPermissionAction from './TaxonomyPermissionAction';
-import { actionsPropTypes, vocabularyGroupsPropTypes } from '../helpers/customPropsType';
+import TaxonomyContext from './TaxonomyContext';
 
 function TaxonomyPermissionPanel(props) {
   const [permission, setPermission] = useState(props.permission);
   const [inheritPermission, setInheritPermission] = useState(props.inheritPermission);
-
   const gloablPermissionField = document.getElementById(props.globalPermissionFieldId);
   const inheritPermissionField = document.getElementById(props.inheritPermissionFieldId);
   const taxonomyPermissionJson = document.getElementById(props.taxonomyPermissionJsonId);
+  const vocabularyLabels = {};
+  let taxonomyPermission = {};
 
   gloablPermissionField.value = permission;
   inheritPermissionField.checked = inheritPermission;
@@ -20,11 +21,24 @@ function TaxonomyPermissionPanel(props) {
     if (taxonomyPermissionJson.value === '') {
       const taxonomyPermissionValues = {};
       props.actions.forEach((action) => {
-        taxonomyPermissionValues[action.code] = [];
+        taxonomyPermissionValues[action.code] = {};
+        props.vocabularyGroups.forEach((group) => {
+          taxonomyPermissionValues[action.code][group.code] = [];
+        });
       });
       taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionValues);
+      taxonomyPermission = taxonomyPermissionValues;
+    } else {
+      taxonomyPermission = JSON.parse(taxonomyPermissionJson.value);
     }
   }
+
+  // get vocabulary labels in context
+  props.vocabularyGroups.forEach((group) => {
+    group.children.forEach((vocabulary) => {
+      vocabularyLabels[vocabulary.code] = vocabulary.label;
+    });
+  });
 
   // Show TaxonomyPermissionAction if restrited permission
   function onChangeGlobalPermission(e) {
@@ -66,14 +80,47 @@ function TaxonomyPermissionPanel(props) {
               name="global-inherit-permission"
             /> Inherit permission from parent
           </div>
-          {props.actions && props.actions.map((action) => (
-            <TaxonomyPermissionAction taxonomyPermissionJson={taxonomyPermissionJson} action={action} vocabularyGroups={props.vocabularyGroups} />
-          ))}
+          <TaxonomyContext.Provider value={{
+            vocabularyGroups: props.vocabularyGroups,
+            taxonomyPermissionJson,
+            vocabularyLabels,
+            taxonomyPermission,
+          }}
+          >
+            {props.actions && props.actions.map((action) => (
+              <TaxonomyPermissionAction key={`action-${action.code}`} action={action} />
+            ))}
+          </TaxonomyContext.Provider>
         </>
       )}
     </div>
   );
 }
+
+// PropTypes
+const actionPropTypes = PropTypes.shape({
+  label: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
+});
+
+const actionsPropTypes = PropTypes.arrayOf(actionPropTypes);
+
+const vocabularyItemPropTypes = PropTypes.shape({
+  label: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+});
+vocabularyItemPropTypes.children = PropTypes.arrayOf(vocabularyItemPropTypes);
+
+const vocabularyGroupPropTypes = PropTypes.shape({
+  label: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  children: PropTypes.arrayOf(vocabularyItemPropTypes),
+});
+
+const vocabularyGroupsPropTypes = PropTypes.arrayOf(vocabularyGroupPropTypes);
 
 TaxonomyPermissionPanel.propTypes = {
   permission: PropTypes.string,

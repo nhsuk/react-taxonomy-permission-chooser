@@ -1,36 +1,51 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import TaxonomyPermissionChooser from './TaxonomyPermissionChooser';
-import { actionPropTypes, vocabularyGroupsPropTypes } from '../helpers/customPropsType';
+import TaxonomyContext from './TaxonomyContext';
 
 function TaxonomyPermissionAction(props) {
+  const { vocabularyGroups } = useContext(TaxonomyContext);
+  const { vocabularyLabels } = useContext(TaxonomyContext);
+  const { taxonomyPermission } = useContext(TaxonomyContext);
+  const [taxonomyPermissionState, setTaxonomyPermissionState] = useState(taxonomyPermission);
+
+  function getData(actionId, groupId) {
+    const valueLabels = [];
+    if (actionId in taxonomyPermissionState && groupId in taxonomyPermissionState[actionId]) {
+      const values = taxonomyPermissionState[actionId][groupId];
+      values.forEach((value) => {
+        valueLabels.push(vocabularyLabels[value]);
+      });
+    }
+    return valueLabels;
+  }
+
+  function updateTaxonomyPermissionState(data) {
+    setTaxonomyPermissionState(data);
+  }
+
   return (
     <div>
       {props.action.label}:
       <ul>
-        {props.vocabularyGroups && props.vocabularyGroups.map((group) => (
-          <li key={`${props.action.code}-${group.code}`}>{group.label}:</li>
+        {vocabularyGroups && vocabularyGroups.map((group) => (
+          <li key={`${props.action.code}-${group.code}`}>{group.label}: {getData(props.action.code, group.code).join(', ')}</li>
         ))}
       </ul>
-      <TaxonomyPermissionChooser
-        actionCode={props.action.code}
-        taxonomyPermissionJson={props.taxonomyPermissionJson}
-        vocabularyGroups={props.vocabularyGroups}
-      />
+      <TaxonomyPermissionChooser actionCode={props.action.code} actionUpdate={updateTaxonomyPermissionState} />
     </div>
   );
 }
 
-TaxonomyPermissionAction.propTypes = {
-  taxonomyPermissionJson: PropTypes.string.isRequired,
-  action: actionPropTypes,
-  vocabularyGroups: vocabularyGroupsPropTypes,
-};
+// PropTypes
+const actionPropTypes = PropTypes.shape({
+  label: PropTypes.string.isRequired,
+  code: PropTypes.string.isRequired,
+});
 
-TaxonomyPermissionAction.defaultProps = {
-  action: {},
-  vocabularyGroups: [],
-};
+TaxonomyPermissionAction.propTypes = { action: actionPropTypes };
+
+TaxonomyPermissionAction.defaultProps = { action: {} };
 
 export default TaxonomyPermissionAction;

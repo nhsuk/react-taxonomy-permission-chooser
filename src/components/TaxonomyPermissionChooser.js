@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import VocabularyGroup from './VocabularyGroup';
-import { vocabularyGroupsPropTypes } from '../helpers/customPropsType';
+import TaxonomyContext from './TaxonomyContext';
 
 function TaxonomyPermissionChooser(props) {
   const [showChooser, setShowChooser] = useState(false);
+  const { vocabularyGroups } = useContext(TaxonomyContext);
 
   function toggleChooser() {
     setShowChooser(!showChooser);
@@ -20,8 +21,13 @@ function TaxonomyPermissionChooser(props) {
         <>
           <h1>TaxonomyPermissionChooser</h1>
           <input onClick={toggleChooser} type="button" value="Close" />
-          {props.vocabularyGroups && props.vocabularyGroups.map((group) => (
-            <VocabularyGroup actionCode={props.actionCode} taxonomyPermissionJson={props.taxonomyPermissionJson} group={group} />
+          {vocabularyGroups && vocabularyGroups.map((group) => (
+            <VocabularyGroup
+              key={`voc-${props.actionCode}-${group.code}`}
+              actionCode={props.actionCode}
+              group={group}
+              actionUpdate={props.actionUpdate}
+            />
           ))}
         </>
       )}
@@ -30,13 +36,8 @@ function TaxonomyPermissionChooser(props) {
 }
 
 TaxonomyPermissionChooser.propTypes = {
-  taxonomyPermissionJson: PropTypes.string.isRequired,
   actionCode: PropTypes.string.isRequired,
-  vocabularyGroups: vocabularyGroupsPropTypes,
-};
-
-TaxonomyPermissionChooser.defaultProps = {
-  vocabularyGroups: [],
+  actionUpdate: PropTypes.func.isRequired,
 };
 
 export default TaxonomyPermissionChooser;
