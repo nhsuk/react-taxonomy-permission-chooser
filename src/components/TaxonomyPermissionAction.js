@@ -1,39 +1,44 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import TaxonomyPermissionChooser from './TaxonomyPermissionChooser';
-import TaxonomyContext from './TaxonomyContext';
+import { useTaxonomyContext } from './contexts/TaxonomyContext';
+
 
 function TaxonomyPermissionAction(props) {
-  const { vocabularyGroups } = useContext(TaxonomyContext);
-  const { vocabularyLabels } = useContext(TaxonomyContext);
-  const { taxonomyPermission } = useContext(TaxonomyContext);
-  const [taxonomyPermissionState, setTaxonomyPermissionState] = useState(taxonomyPermission);
+  const { vocabularyGroups, vocabularyLabels, taxonomyPermissionStore } = useTaxonomyContext().state;
+  let vocabularyTags = null;
 
-  function getData(actionId, groupId) {
+  function renderActionGroupVocabulary(actionId, groupId) {
     const valueLabels = [];
-    if (actionId in taxonomyPermissionState && groupId in taxonomyPermissionState[actionId]) {
-      const values = taxonomyPermissionState[actionId][groupId];
+    if (actionId in taxonomyPermissionStore && groupId in taxonomyPermissionStore[actionId]) {
+      const values = taxonomyPermissionStore[actionId][groupId];
       values.forEach((value) => {
         valueLabels.push(vocabularyLabels[value]);
       });
     }
-    return valueLabels;
-  }
 
-  function updateTaxonomyPermissionState(data) {
-    setTaxonomyPermissionState(data);
+    if (valueLabels.length > 0) {
+      vocabularyTags = valueLabels.map((voc) => (
+        <li key={`${actionId}-${groupId}-${voc}`} className="selected-term">
+          <span className="label">{voc}</span>
+        </li>
+      ));
+    } else {
+      vocabularyTags = <li className="message">No keywords selected</li>;
+    }
+    return <ul>{vocabularyTags}</ul>;
   }
 
   return (
     <div>
-      {props.action.label}:
+      <h2>{props.action.label}</h2>
       <ul>
         {vocabularyGroups && vocabularyGroups.map((group) => (
-          <li key={`${props.action.code}-${group.code}`}>{group.label}: {getData(props.action.code, group.code).join(', ')}</li>
+          <li key={`${props.action.code}-${group.code}`}>{group.label}: {renderActionGroupVocabulary(props.action.code, group.code)}</li>
         ))}
       </ul>
-      <TaxonomyPermissionChooser actionCode={props.action.code} actionUpdate={updateTaxonomyPermissionState} />
+      <TaxonomyPermissionChooser actionCode={props.action.code} />
     </div>
   );
 }
@@ -45,7 +50,6 @@ const actionPropTypes = PropTypes.shape({
 });
 
 TaxonomyPermissionAction.propTypes = { action: actionPropTypes };
-
 TaxonomyPermissionAction.defaultProps = { action: {} };
 
 export default TaxonomyPermissionAction;

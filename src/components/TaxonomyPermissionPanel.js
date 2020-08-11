@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import TaxonomyPermissionAction from './TaxonomyPermissionAction';
-import TaxonomyContext from './TaxonomyContext';
+import { TaxonomyContext } from './contexts/TaxonomyContext';
+
 
 function TaxonomyPermissionPanel(props) {
   const [permission, setPermission] = useState(props.permission);
@@ -10,27 +11,14 @@ function TaxonomyPermissionPanel(props) {
   const gloablPermissionField = document.getElementById(props.globalPermissionFieldId);
   const inheritPermissionField = document.getElementById(props.inheritPermissionFieldId);
   const taxonomyPermissionJson = document.getElementById(props.taxonomyPermissionJsonId);
+  let taxonomyPermissionStore = {};
   const vocabularyLabels = {};
-  let taxonomyPermission = {};
 
   gloablPermissionField.value = permission;
   inheritPermissionField.checked = inheritPermission;
 
-  // initialise json string in the dom if empty
-  if (taxonomyPermissionJson) {
-    if (taxonomyPermissionJson.value === '') {
-      const taxonomyPermissionValues = {};
-      props.actions.forEach((action) => {
-        taxonomyPermissionValues[action.code] = {};
-        props.vocabularyGroups.forEach((group) => {
-          taxonomyPermissionValues[action.code][group.code] = [];
-        });
-      });
-      taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionValues);
-      taxonomyPermission = taxonomyPermissionValues;
-    } else {
-      taxonomyPermission = JSON.parse(taxonomyPermissionJson.value);
-    }
+  if (taxonomyPermissionJson && taxonomyPermissionJson.value) {
+    taxonomyPermissionStore = JSON.parse(taxonomyPermissionJson.value);
   }
 
   // get vocabulary labels in context
@@ -53,45 +41,62 @@ function TaxonomyPermissionPanel(props) {
 
   return (
     <div>
-      <h1>TaxonomyPermissionPanel</h1>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </p>
       <div>
-        <input
-          onChange={onChangeGlobalPermission}
-          type="radio"
-          name="global-permission"
-          value="public"
-          checked={permission === 'public'}
-        /> Public
-        <input
-          onChange={onChangeGlobalPermission}
-          type="radio"
-          name="global-permission"
-          value="restricted"
-          checked={permission === 'restricted'}
-        />Restricted
+        <label htmlFor="radio_global_permission">Global permission:
+          <div>
+            <label htmlFor="radio_global_permission_public">
+              <input
+                id="radio_global_permission_public"
+                onChange={onChangeGlobalPermission}
+                type="radio"
+                name="global-permission"
+                value="public"
+                checked={permission === 'public'}
+              /> Public
+            </label>
+            <label htmlFor="radio_global_permission_restricted">
+              <input
+                id="radio_global_permission_restricted"
+                onChange={onChangeGlobalPermission}
+                type="radio"
+                name="global-permission"
+                value="restricted"
+                checked={permission === 'restricted'}
+              />Restricted
+            </label>
+          </div>
+        </label>
+        { permission === 'restricted' && (
+          <div>
+            <label htmlFor="inheritPermission">
+              <input
+                id="inheritPermission"
+                checked={inheritPermission}
+                onChange={() => setInheritPermission(!inheritPermission)}
+                type="checkbox"
+                name="global-inherit-permission"
+              />
+              Inherit permission from parent
+            </label>
+          </div>
+        )}
       </div>
       { permission === 'restricted' && (
-        <>
-          <div>
-            <input
-              checked={inheritPermission}
-              onChange={() => setInheritPermission(!inheritPermission)}
-              type="checkbox"
-              name="global-inherit-permission"
-            /> Inherit permission from parent
-          </div>
-          <TaxonomyContext.Provider value={{
-            vocabularyGroups: props.vocabularyGroups,
-            taxonomyPermissionJson,
-            vocabularyLabels,
-            taxonomyPermission,
-          }}
-          >
-            {props.actions && props.actions.map((action) => (
-              <TaxonomyPermissionAction key={`action-${action.code}`} action={action} />
-            ))}
-          </TaxonomyContext.Provider>
-        </>
+        <TaxonomyContext value={{
+          vocabularyGroups: props.vocabularyGroups,
+          taxonomyPermissionJson,
+          vocabularyLabels,
+          taxonomyPermissionStore,
+        }}
+        >
+          {props.actions && props.actions.map((action) => (
+            <TaxonomyPermissionAction key={`action-${action.code}`} action={action} />
+          ))}
+        </TaxonomyContext>
       )}
     </div>
   );

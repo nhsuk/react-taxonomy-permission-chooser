@@ -1,36 +1,23 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-import TaxonomyContext from './TaxonomyContext';
+import { useTaxonomyContext } from './contexts/TaxonomyContext';
 
 function VocabularyGroup(props) {
-  const { taxonomyPermissionJson } = useContext(TaxonomyContext);
+  const { taxonomyPermissionStore } = useTaxonomyContext().state;
+  const { updatePermission } = useTaxonomyContext().action;
 
   // Use the json string data in the dom to define the default checkbox state
   function isChecked(itemCode) {
-    if (taxonomyPermissionJson) {
-      const taxonomyPermissionValues = JSON.parse(taxonomyPermissionJson.value);
-      if (props.actionCode in taxonomyPermissionValues && props.group.code in taxonomyPermissionValues[props.actionCode]) {
-        return taxonomyPermissionValues[props.actionCode][props.group.code].includes(itemCode);
-      }
+    if (props.actionCode in taxonomyPermissionStore && props.group.code in taxonomyPermissionStore[props.actionCode]) {
+      return taxonomyPermissionStore[props.actionCode][props.group.code].includes(itemCode);
     }
     return false;
   }
 
   // Update json string in the dom when user check/uncheck the checkbox
-  function updatePermission(e) {
-    if (taxonomyPermissionJson) {
-      const taxonomyPermissionValues = JSON.parse(taxonomyPermissionJson.value);
-      if (e.target.checked) {
-        taxonomyPermissionValues[props.actionCode][props.group.code].push(e.target.value);
-      } else {
-        taxonomyPermissionValues[props.actionCode][props.group.code] = taxonomyPermissionValues[props.actionCode][props.group.code].filter(
-          (item) => item !== e.target.value,
-        );
-      }
-      taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionValues);
-      props.actionUpdate(taxonomyPermissionValues);
-    }
+  function updateCheckboxPermission(e) {
+    updatePermission(props.actionCode, props.group.code, e.target.value, !e.target.checked);
   }
 
   return (
@@ -42,7 +29,7 @@ function VocabularyGroup(props) {
           <div key={`div-${props.actionCode}-${props.group}-${item.code}`}>
             <input
               key={`checkbox-${props.actionCode}-${props.group}-${item.code}`}
-              onChange={updatePermission}
+              onChange={updateCheckboxPermission}
               value={item.code}
               type="checkbox"
               defaultChecked={isChecked(item.code)}
@@ -73,7 +60,6 @@ const vocabularyGroupPropTypes = PropTypes.shape({
 VocabularyGroup.propTypes = {
   group: vocabularyGroupPropTypes,
   actionCode: PropTypes.string.isRequired,
-  actionUpdate: PropTypes.func.isRequired,
 };
 
 VocabularyGroup.defaultProps = { group: {} };
