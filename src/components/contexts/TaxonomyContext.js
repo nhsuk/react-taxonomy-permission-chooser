@@ -9,7 +9,7 @@ const { Provider } = context;
  */
 const TaxonomyContext = ({ value, children }) => {
   const [state, dispatch] = useReducer((reducerState, action) => {
-    const { taxonomyPermissionStore } = reducerState;
+    const { taxonomyPermissionStore, taxonomyPermissionJson } = reducerState;
     switch (action.type) {
       case 'ADD':
         taxonomyPermissionStore[action.actionCode] = taxonomyPermissionStore[action.actionCode] || {};
@@ -18,6 +18,7 @@ const TaxonomyContext = ({ value, children }) => {
           taxonomyPermissionStore[action.actionCode][action.groupCode].push(action.item);
         }
         taxonomyPermissionStore[action.actionCode][action.groupCode].sort();
+        taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
       case 'REMOVE':
         taxonomyPermissionStore[action.actionCode][action.groupCode] = taxonomyPermissionStore[action.actionCode][action.groupCode].filter(
@@ -29,6 +30,7 @@ const TaxonomyContext = ({ value, children }) => {
         if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
           delete taxonomyPermissionStore[action.actionCode];
         }
+        taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
       default:
         throw new Error('Unknown action');
