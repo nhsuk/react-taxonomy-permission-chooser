@@ -38,14 +38,16 @@ function VocabularyGroup(props) {
       <p>{props.group.description}</p>
       <ul>
         {props.group.children && props.group.children.map((item) => (
-          <div key={`div-${props.actionCode}-${props.group}-${item.code}`}>
-            <input
-              key={`checkbox-${props.actionCode}-${props.group}-${item.code}`}
-              onChange={updateCheckboxPermission}
-              value={item.code}
-              type="checkbox"
-              defaultChecked={isChecked(item.code)}
-            />{item.label}
+          <div key={`div-${props.actionCode}-${props.group.code}-${item.code}`}>
+            <label htmlFor={`checkbox-${props.actionCode}-${props.group.code}-${item.code}`}>
+              <input
+                id={`checkbox-${props.actionCode}-${props.group.code}-${item.code}`}
+                onChange={updateCheckboxPermission}
+                value={item.code}
+                type="checkbox"
+                defaultChecked={isChecked(item.code)}
+              /> {item.label}
+            </label>
           </div>
         ))}
       </ul>
