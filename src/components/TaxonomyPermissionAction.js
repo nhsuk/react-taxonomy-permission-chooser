@@ -1,12 +1,57 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { createUseStyles } from 'react-jss';
 
 import TaxonomyPermissionChooser from './TaxonomyPermissionChooser';
 import { useTaxonomyContext } from './contexts/TaxonomyContext';
 
+const useStyles = createUseStyles({
+  actionPanel: {
+    backgroundColor: '#ddd',
+    padding: '20px',
+    marginTop: '20px',
+  },
+  '&.selected-term': {
+    border: 'solid thin #333',
+    borderRadius: 3,
+  },
+  tags: {
+    padding: 0,
+    margin: 0,
+    '& li': {
+      display: 'inline-flex',
+      flexWrap: 'nowrap',
+      justifyContent: 'flex-start',
+      alignContent: 'center',
+      alignItems: 'stretch',
+      margin: '5px 2px',
+      fontSize: '1em',
+      height: '1.5em',
+      padding: 0,
+      listStyle: 'none',
+      fontFamily: 'sans-serif',
+      '&.selected-term': {
+        border: 'solid thin #333',
+        borderRadius: 3,
+      },
+      '&.message': { fontWeight: 'bold' },
+      '& span.label': {
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        textAlign: 'center',
+        flex: '1 1 auto',
+        padding: [0, '1em'],
+        whitespace: 'nowrap',
+        background: '#fff',
+      },
+    },
+  },
+});
 
 function TaxonomyPermissionAction(props) {
   const { vocabularyGroups, vocabularyLabels, taxonomyPermissionStore } = useTaxonomyContext().state;
+  const classes = useStyles();
   let vocabularyTags = null;
 
   function renderActionGroupVocabulary(actionId, groupId) {
@@ -27,11 +72,11 @@ function TaxonomyPermissionAction(props) {
     } else {
       vocabularyTags = <li className="message">No keywords selected</li>;
     }
-    return <ul>{vocabularyTags}</ul>;
+    return <ul className={classes.tags}>{vocabularyTags}</ul>;
   }
 
   return (
-    <div>
+    <div className={classes.actionPanel}>
       <h2>{props.action.label}</h2>
       <ul>
         {vocabularyGroups && vocabularyGroups.map((group) => (

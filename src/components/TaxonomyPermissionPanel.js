@@ -1,9 +1,27 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { createUseStyles } from 'react-jss';
 
 import TaxonomyPermissionAction from './TaxonomyPermissionAction';
 import { TaxonomyContext } from './contexts/TaxonomyContext';
 
+const useStyles = createUseStyles({
+  globalPermissionsPanel: {
+    backgroundColor: '#ddd',
+    padding: '20px',
+    '& label': {
+      display: 'inline',
+      float: 'initial',
+      width: '100%',
+    },
+  },
+  inheritPermissionPanel: { marginTop: '20px' },
+  errorMessage: {
+    backgroundColor: '#f5d6d7',
+    borderRadius: '3px',
+    padding: '20px',
+  },
+});
 
 function TaxonomyPermissionPanel(props) {
   const [permission, setPermission] = useState(props.permission);
@@ -13,6 +31,7 @@ function TaxonomyPermissionPanel(props) {
   const taxonomyPermissionJson = document.getElementById(props.taxonomyPermissionJsonId);
   let taxonomyPermissionStore = {};
   const vocabularyLabels = {};
+  const classes = useStyles();
 
   gloablPermissionField.value = permission;
   inheritPermissionField.checked = inheritPermission;

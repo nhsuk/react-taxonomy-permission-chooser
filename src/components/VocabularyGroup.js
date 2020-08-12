@@ -1,11 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { createUseStyles } from 'react-jss';
 
 import { useTaxonomyContext } from './contexts/TaxonomyContext';
+
+const useStyles = createUseStyles({
+  vocabularyGroupSection: {
+    '& label': {
+      display: 'inline',
+      float: 'initial',
+      width: '100%',
+    },
+  },
+});
 
 function VocabularyGroup(props) {
   const { taxonomyPermissionStore } = useTaxonomyContext().state;
   const { updatePermission } = useTaxonomyContext().action;
+  const classes = useStyles();
 
   // Use the json string data in the dom to define the default checkbox state
   function isChecked(itemCode) {
@@ -21,8 +33,8 @@ function VocabularyGroup(props) {
   }
 
   return (
-    <div>
-      <h3>{props.group.label}</h3>
+    <div className={classes.vocabularyGroupSection}>
+      <h2>{props.group.label}</h2>
       <p>{props.group.description}</p>
       <ul>
         {props.group.children && props.group.children.map((item) => (
