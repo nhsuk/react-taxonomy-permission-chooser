@@ -32,6 +32,13 @@ const TaxonomyContext = ({ value, children }) => {
         }
         taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
+      case 'REMOVE_ALL_VOCABULARIES':
+        delete taxonomyPermissionStore[action.actionCode][action.groupCode];
+        if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
+          delete taxonomyPermissionStore[action.actionCode];
+        }
+        taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
+        return { ...reducerState, taxonomyPermissionStore };
       default:
         throw new Error('Unknown action');
     }
@@ -45,7 +52,11 @@ const TaxonomyContext = ({ value, children }) => {
     }
   };
 
-  return <Provider value={{ state, action: { updatePermission } }}>{children}</Provider>;
+  const removeAllVocabularies = (actionCode, groupCode) => {
+    dispatch({ type: 'REMOVE_ALL_VOCABULARIES', actionCode, groupCode });
+  };
+
+  return <Provider value={{ state, action: { updatePermission, removeAllVocabularies } }}>{children}</Provider>;
 };
 
 TaxonomyContext.propTypes = {

@@ -70,7 +70,7 @@ function TaxonomyPermissionAction(props) {
         </li>
       ));
     } else {
-      vocabularyTags = <li className="message">No keywords selected</li>;
+      vocabularyTags = <li className="message">All</li>;
     }
     return <ul className={classes.tags}>{vocabularyTags}</ul>;
   }

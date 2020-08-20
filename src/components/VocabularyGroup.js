@@ -16,20 +16,52 @@ const useStyles = createUseStyles({
 
 function VocabularyGroup(props) {
   const { taxonomyPermissionStore } = useTaxonomyContext().state;
-  const { updatePermission } = useTaxonomyContext().action;
+  const { updatePermission, removeAllVocabularies } = useTaxonomyContext().action;
   const classes = useStyles();
+  let checkedCheckboxesCount = 0;
 
   // Use the json string data in the dom to define the default checkbox state
   function isChecked(itemCode) {
     if (props.actionCode in taxonomyPermissionStore && props.group.code in taxonomyPermissionStore[props.actionCode]) {
-      return taxonomyPermissionStore[props.actionCode][props.group.code].includes(itemCode);
+      if (taxonomyPermissionStore[props.actionCode][props.group.code].includes(itemCode)) {
+        checkedCheckboxesCount += 1;
+        return true;
+      }
     }
     return false;
+  }
+
+  // Use the json string data in the dom to define the default 'all' checkbox state
+  function isAllChecked() {
+    if (checkedCheckboxesCount > 0) {
+      return false;
+    }
+    return true;
   }
 
   // Update json string in the dom when user check/uncheck the checkbox
   function updateCheckboxPermission(e) {
     updatePermission(props.actionCode, props.group.code, e.target.value, !e.target.checked);
+    if (e.target.checked) {
+      checkedCheckboxesCount += 1;
+      document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-all`).checked = false;
+    } else {
+      checkedCheckboxesCount -= 1;
+      document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-all`).checked = isAllChecked();
+    }
+  }
+
+  // Update json string in the dom when user check/uncheck the checkbox
+  function updateCheckboxAllPermission(e) {
+    if (!e.target.checked) {
+      e.target.checked = true;
+      e.preventDefault();
+    } else {
+      props.group.children.forEach((item) => {
+        document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-${item.code}`).checked = false;
+      });
+    }
+    removeAllVocabularies(props.actionCode, props.group.code);
   }
 
   return (
@@ -37,6 +69,16 @@ function VocabularyGroup(props) {
       <h2>{props.group.label}</h2>
       <p>{props.group.description}</p>
       <ul>
+        <div key={`div-${props.actionCode}-${props.group.code}-all`}>
+          <label htmlFor={`checkbox-${props.actionCode}-${props.group.code}-all`}>
+            <input
+              id={`checkbox-${props.actionCode}-${props.group.code}-all`}
+              onChange={updateCheckboxAllPermission}
+              type="checkbox"
+              defaultChecked={isAllChecked(props.group.code)}
+            /> All
+          </label>
+        </div>
         {props.group.children && props.group.children.map((item) => (
           <div key={`div-${props.actionCode}-${props.group.code}-${item.code}`}>
             <label htmlFor={`checkbox-${props.actionCode}-${props.group.code}-${item.code}`}>
