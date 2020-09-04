@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="/manifest.json" />
     <title>Taxonomy Permission</title>
+    <script>
+      function choosePage() {
+        alert("Choose a page");
+      }
+    </script>
   </head>
   <body style="background: grey">
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -21,6 +26,10 @@
         Inherit Permission: <input id="inherit-permission" type="text" value="none"><br />
         <label for="id_taxonomy_permission_json">Json:</label>
         <textarea id="id_taxonomy_permission_json" rows="10" cols="70"></textarea>
+        <div id="id_permission_inherit_page_chooser">
+          Inherit from:
+          <button onclick="choosePage()" type="button">Choose a page</button>
+        </div>
       </div>
     </div>
 </html>

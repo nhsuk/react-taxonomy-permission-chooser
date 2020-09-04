@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 import { createUseStyles } from 'react-jss';
 
@@ -33,6 +34,7 @@ function TaxonomyPermissionPanel(props) {
   const errorMessages = [];
   const vocabularyLabels = {};
   const classes = useStyles();
+  let taxonomyPermissionInheritParentLoaded = false;
 
   // check globalPermissionFieldId exists and get value
   if (props.globalPermissionFieldId) {
@@ -108,9 +110,9 @@ function TaxonomyPermissionPanel(props) {
 
   function onChangeInheritPermission(e) {
     if (e.target.checked) {
-      setInheritPermission('parent');
+      setInheritPermission('page');
       inheritPermissionField.checked = true;
-      inheritPermissionField.value = 'parent';
+      inheritPermissionField.value = 'page';
     } else {
       setInheritPermission('none');
       inheritPermissionField.checked = false;
@@ -163,14 +165,23 @@ function TaxonomyPermissionPanel(props) {
                 <label htmlFor="inheritPermission">
                   <input
                     id="inheritPermission"
-                    checked={inheritPermission === 'parent'}
+                    checked={inheritPermission === 'page'}
                     onChange={onChangeInheritPermission}
                     type="checkbox"
                     name="global-inherit-permission"
                   />
-                  Inherit permission from parent
+                  Inherit permission from another page
                 </label>
               </div>
+            )}
+            { permission === 'restricted' && inheritPermission === 'page' && props.taxonomyPermissionInheritParent && (
+              <div ref={(node) => {
+                if (!taxonomyPermissionInheritParentLoaded) {
+                  node.appendChild(props.taxonomyPermissionInheritParent);
+                  taxonomyPermissionInheritParentLoaded = true;
+                }
+              }}
+              />
             )}
           </div>
           { permission === 'restricted' && (
@@ -221,6 +232,7 @@ TaxonomyPermissionPanel.propTypes = {
   globalPermissionFieldId: PropTypes.string,
   inheritPermissionFieldId: PropTypes.string,
   taxonomyPermissionJsonId: PropTypes.string,
+  taxonomyPermissionInheritParent: PropTypes.instanceOf(Element),
   actions: actionsPropTypes,
   vocabularyGroups: vocabularyGroupsPropTypes,
 };
@@ -229,6 +241,7 @@ TaxonomyPermissionPanel.defaultProps = {
   globalPermissionFieldId: null,
   inheritPermissionFieldId: null,
   taxonomyPermissionJsonId: null,
+  taxonomyPermissionInheritParent: null,
   actions: [],
   vocabularyGroups: [],
 };
