@@ -33,9 +33,11 @@ const TaxonomyContext = ({ value, children }) => {
         taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
       case 'REMOVE_ALL_VOCABULARIES':
-        delete taxonomyPermissionStore[action.actionCode][action.groupCode];
-        if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
-          delete taxonomyPermissionStore[action.actionCode];
+        if (Object.keys(taxonomyPermissionStore).length !== 0) {
+          delete taxonomyPermissionStore[action.actionCode][action.groupCode];
+          if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
+            delete taxonomyPermissionStore[action.actionCode];
+          }
         }
         taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };

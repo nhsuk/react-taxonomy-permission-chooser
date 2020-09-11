@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { createUseStyles } from 'react-jss';
 
@@ -16,6 +16,7 @@ const useStyles = createUseStyles({
 
 function VocabularyGroup(props) {
   const { taxonomyPermissionStore } = useTaxonomyContext().state;
+  const [isAllChecked, setIsAllChecked] = useState(true);
   const { updatePermission, removeAllVocabularies } = useTaxonomyContext().action;
   const classes = useStyles();
   let checkedCheckboxesCount = 0;
@@ -25,6 +26,9 @@ function VocabularyGroup(props) {
     if (props.actionCode in taxonomyPermissionStore && props.group.code in taxonomyPermissionStore[props.actionCode]) {
       if (taxonomyPermissionStore[props.actionCode][props.group.code].includes(itemCode)) {
         checkedCheckboxesCount += 1;
+        if (isAllChecked) {
+          setIsAllChecked(false);
+        }
         return true;
       }
     }
@@ -32,11 +36,15 @@ function VocabularyGroup(props) {
   }
 
   // Use the json string data in the dom to define the default 'all' checkbox state
-  function isAllChecked() {
+  function updateAllChecked() {
     if (checkedCheckboxesCount > 0) {
-      return false;
+      if (isAllChecked) {
+        setIsAllChecked(false);
+      }
     }
-    return true;
+    if (!isAllChecked) {
+      setIsAllChecked(true);
+    }
   }
 
   // Update json string in the dom when user check/uncheck the checkbox
@@ -44,22 +52,21 @@ function VocabularyGroup(props) {
     updatePermission(props.actionCode, props.group.code, e.target.value, !e.target.checked);
     if (e.target.checked) {
       checkedCheckboxesCount += 1;
-      document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-all`).checked = false;
     } else {
       checkedCheckboxesCount -= 1;
-      document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-all`).checked = isAllChecked();
     }
+    updateAllChecked();
   }
 
   // Update json string in the dom when user check/uncheck the checkbox
   function updateCheckboxAllPermission(e) {
-    if (!e.target.checked) {
-      e.target.checked = true;
+    if (isAllChecked) {
       e.preventDefault();
     } else {
       props.group.children.forEach((item) => {
         document.getElementById(`checkbox-${props.actionCode}-${props.group.code}-${item.code}`).checked = false;
       });
+      setIsAllChecked(true);
     }
     removeAllVocabularies(props.actionCode, props.group.code);
   }
@@ -74,8 +81,8 @@ function VocabularyGroup(props) {
             <input
               id={`checkbox-${props.actionCode}-${props.group.code}-all`}
               onChange={updateCheckboxAllPermission}
+              checked={isAllChecked}
               type="checkbox"
-              defaultChecked={isAllChecked(props.group.code)}
             /> All
           </label>
         </div>
