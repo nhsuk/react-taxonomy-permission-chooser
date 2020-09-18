@@ -14,6 +14,7 @@ ReactDOM.render(
     inheritPermissionFieldId="inherit-permission"
     taxonomyPermissionJsonId="id_taxonomy_permission_json"
     taxonomyPermissionInheritParent={document.getElementById('id_permission_inherit_page_chooser')}
+    permissionType="page"
   />,
   document.getElementById('root'),
 );

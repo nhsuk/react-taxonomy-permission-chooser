@@ -130,60 +130,70 @@ function TaxonomyPermissionPanel(props) {
       )}
       {errorMessages.length === 0 && (
         <>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-          </p>
-          <div className={classes.globalPermissionsPanel}>
-            <label htmlFor="radio_global_permission">Global permission:
-              <div>
-                <label htmlFor="radio_global_permission_public">
-                  <input
-                    id="radio_global_permission_public"
-                    onChange={onChangeGlobalPermission}
-                    type="radio"
-                    name="global-permission"
-                    value="public"
-                    checked={permission === 'public'}
-                  /> Public
-                </label>
-                <label htmlFor="radio_global_permission_restricted">
-                  <input
-                    id="radio_global_permission_restricted"
-                    onChange={onChangeGlobalPermission}
-                    type="radio"
-                    name="global-permission"
-                    value="restricted"
-                    checked={permission === 'restricted'}
-                  />Restricted
-                </label>
-              </div>
-            </label>
-            { permission === 'restricted' && (
-              <div className={classes.inheritPermissionPanel}>
-                <label htmlFor="inheritPermission">
-                  <input
-                    id="inheritPermission"
-                    checked={inheritPermission === 'page'}
-                    onChange={onChangeInheritPermission}
-                    type="checkbox"
-                    name="global-inherit-permission"
-                  />
-                  Inherit permission from another page
-                </label>
-              </div>
-            )}
-            { permission === 'restricted' && inheritPermission === 'page' && props.taxonomyPermissionInheritParent && (
-              <div ref={(node) => {
-                if (!taxonomyPermissionInheritParentLoaded) {
-                  node.appendChild(props.taxonomyPermissionInheritParent);
-                  taxonomyPermissionInheritParentLoaded = true;
-                }
-              }}
-              />
-            )}
-          </div>
-          { permission === 'restricted' && (
+          {props.permissionType === 'page' && (
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          )}
+          {props.permissionType === 'model' && (
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+          )}
+          {props.permissionType === 'page' && (
+            <div className={classes.globalPermissionsPanel}>
+              <label htmlFor="radio_global_permission">Global permission:
+                <div>
+                  <label htmlFor="radio_global_permission_public">
+                    <input
+                      id="radio_global_permission_public"
+                      onChange={onChangeGlobalPermission}
+                      type="radio"
+                      name="global-permission"
+                      value="public"
+                      checked={permission === 'public'}
+                    /> Public
+                  </label>
+                  <label htmlFor="radio_global_permission_restricted">
+                    <input
+                      id="radio_global_permission_restricted"
+                      onChange={onChangeGlobalPermission}
+                      type="radio"
+                      name="global-permission"
+                      value="restricted"
+                      checked={permission === 'restricted'}
+                    />Restricted
+                  </label>
+                </div>
+              </label>
+              { permission === 'restricted' && (
+                <div className={classes.inheritPermissionPanel}>
+                  <label htmlFor="inheritPermission">
+                    <input
+                      id="inheritPermission"
+                      checked={inheritPermission === 'page'}
+                      onChange={onChangeInheritPermission}
+                      type="checkbox"
+                      name="global-inherit-permission"
+                    />
+                    Inherit permission from another page
+                  </label>
+                </div>
+              )}
+              { permission === 'restricted' && inheritPermission === 'page' && props.taxonomyPermissionInheritParent && (
+                <div ref={(node) => {
+                  if (!taxonomyPermissionInheritParentLoaded) {
+                    node.appendChild(props.taxonomyPermissionInheritParent);
+                    taxonomyPermissionInheritParentLoaded = true;
+                  }
+                }}
+                />
+              )}
+            </div>
+          )}
+          { (permission === 'restricted' || props.permissionType === 'model') && (
             <TaxonomyContext value={{
               vocabularyGroups: props.vocabularyGroups,
               taxonomyPermissionJson,
@@ -234,6 +244,7 @@ TaxonomyPermissionPanel.propTypes = {
   taxonomyPermissionInheritParent: PropTypes.instanceOf(Element),
   actions: actionsPropTypes,
   vocabularyGroups: vocabularyGroupsPropTypes,
+  permissionType: PropTypes.string,
 };
 
 TaxonomyPermissionPanel.defaultProps = {
@@ -243,6 +254,7 @@ TaxonomyPermissionPanel.defaultProps = {
   taxonomyPermissionInheritParent: null,
   actions: [],
   vocabularyGroups: [],
+  permissionType: 'page',
 };
 
 export default TaxonomyPermissionPanel;
