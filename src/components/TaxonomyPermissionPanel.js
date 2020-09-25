@@ -29,6 +29,7 @@ function TaxonomyPermissionPanel(props) {
   const gloablPermissionField = document.getElementById(props.globalPermissionFieldId);
   const inheritPermissionField = document.getElementById(props.inheritPermissionFieldId);
   const taxonomyPermissionJson = document.getElementById(props.taxonomyPermissionJsonId);
+  const actions = props.actions.filter((action) => props.permissionActions.includes(action.code));
   let taxonomyPermissionStore = {};
   const errorMessages = [];
   const vocabularyLabels = {};
@@ -201,7 +202,7 @@ function TaxonomyPermissionPanel(props) {
               taxonomyPermissionStore,
             }}
             >
-              {props.actions && props.actions.map((action) => (
+              {props.actions && actions.map((action) => (
                 <TaxonomyPermissionAction key={`action-${action.code}`} action={action} />
               ))}
             </TaxonomyContext>
@@ -245,6 +246,7 @@ TaxonomyPermissionPanel.propTypes = {
   actions: actionsPropTypes,
   vocabularyGroups: vocabularyGroupsPropTypes,
   permissionType: PropTypes.string,
+  permissionActions: PropTypes.arrayOf(PropTypes.string),
 };
 
 TaxonomyPermissionPanel.defaultProps = {
@@ -255,6 +257,7 @@ TaxonomyPermissionPanel.defaultProps = {
   actions: [],
   vocabularyGroups: [],
   permissionType: 'page',
+  permissionActions: [],
 };
 
 export default TaxonomyPermissionPanel;

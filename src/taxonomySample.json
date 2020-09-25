@@ -1,5 +1,8 @@
 {
   "actions": [{
+    "label":"Group",
+    "code":"group"
+  }, {
     "label":"View",
     "code":"view"
   }, {
