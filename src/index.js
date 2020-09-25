@@ -12,9 +12,9 @@ ReactDOM.render(
     globalPermissionFieldId="global-permission"
     inheritPermissionFieldId="inherit-permission"
     taxonomyPermissionJsonId="id_taxonomy_permission_json"
-    taxonomyPermissionInheritParent={document.getElementById('id_permission_inherit_page_chooser')}
+    taxonomyPermissionInheritPage={document.getElementById('id_permission_inherit_page_chooser')}
     permissionActions={['view', 'download']}
-    permissionType="model"
+    permissionType="page"
   />,
   document.getElementById('root'),
 );

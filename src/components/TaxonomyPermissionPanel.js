@@ -34,7 +34,8 @@ function TaxonomyPermissionPanel(props) {
   const errorMessages = [];
   const vocabularyLabels = {};
   const classes = useStyles();
-  let taxonomyPermissionInheritParentLoaded = false;
+  const [taxonomyPermissionInheritPageLoaded, setTaxonomyPermissionInheritPageLoaded] = useState(false);
+  const [taxonomyPermissionInheritPageField, setTaxonomyPermissionInheritPageField] = useState(null);
 
   if (props.permissionType === 'page') {
     // check globalPermissionFieldId exists and get value
@@ -57,22 +58,24 @@ function TaxonomyPermissionPanel(props) {
     }
 
     // check inheritPermissionFieldId exists and get value
-    if (props.inheritPermissionFieldId) {
-      if (inheritPermissionField) {
-        if (inheritPermissionField.value && !inheritPermission) {
-          setInheritPermission(inheritPermissionField.value);
+    if (!taxonomyPermissionInheritPageLoaded) {
+      if (props.inheritPermissionFieldId) {
+        if (inheritPermissionField) {
+          if (inheritPermissionField.value && !inheritPermission) {
+            setInheritPermission(inheritPermissionField.value);
+          }
+        } else {
+          errorMessages.push({
+            code: `missing-elt-${props.inheritPermissionFieldId}`,
+            text: `Missing element id: ${props.inheritPermissionFieldId}`,
+          });
         }
       } else {
         errorMessages.push({
-          code: `missing-elt-${props.inheritPermissionFieldId}`,
-          text: `Missing element id: ${props.inheritPermissionFieldId}`,
+          code: `missing-id-${props.inheritPermissionFieldId}`,
+          text: 'Missing inheritPermissionFieldId',
         });
       }
-    } else {
-      errorMessages.push({
-        code: `missing-id-${props.inheritPermissionFieldId}`,
-        text: 'Missing inheritPermissionFieldId',
-      });
     }
   }
 
@@ -198,11 +201,15 @@ function TaxonomyPermissionPanel(props) {
                   </label>
                 </div>
               )}
-              { permission === 'restricted' && inheritPermission === 'page' && props.taxonomyPermissionInheritParent && (
+              { permission === 'restricted' && inheritPermission === 'page' && props.taxonomyPermissionInheritPage && (
                 <div ref={(node) => {
-                  if (!taxonomyPermissionInheritParentLoaded) {
-                    node.appendChild(props.taxonomyPermissionInheritParent);
-                    taxonomyPermissionInheritParentLoaded = true;
+                  if (node) {
+                    node.appendChild(props.taxonomyPermissionInheritPage);
+                    setTaxonomyPermissionInheritPageField(node);
+                    setTaxonomyPermissionInheritPageLoaded(true);
+                  }
+                  if (taxonomyPermissionInheritPageField) {
+                    taxonomyPermissionInheritPageField.appendChild(props.taxonomyPermissionInheritPage);
                   }
                 }}
                 />
@@ -257,7 +264,7 @@ TaxonomyPermissionPanel.propTypes = {
   globalPermissionFieldId: PropTypes.string,
   inheritPermissionFieldId: PropTypes.string,
   taxonomyPermissionJsonId: PropTypes.string,
-  taxonomyPermissionInheritParent: PropTypes.instanceOf(Element),
+  taxonomyPermissionInheritPage: PropTypes.instanceOf(Element),
   actions: actionsPropTypes,
   vocabularyGroups: vocabularyGroupsPropTypes,
   permissionType: PropTypes.string,
@@ -268,7 +275,7 @@ TaxonomyPermissionPanel.defaultProps = {
   globalPermissionFieldId: null,
   inheritPermissionFieldId: null,
   taxonomyPermissionJsonId: null,
-  taxonomyPermissionInheritParent: null,
+  taxonomyPermissionInheritPage: null,
   actions: [],
   vocabularyGroups: [],
   permissionType: 'page',
