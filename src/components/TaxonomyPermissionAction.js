@@ -58,7 +58,7 @@ function TaxonomyPermissionAction(props) {
     const valueLabels = [];
     if (actionId in taxonomyPermissionStore && groupId in taxonomyPermissionStore[actionId]) {
       const values = taxonomyPermissionStore[actionId][groupId];
-      values.forEach((value) => {
+      values.filter((val) => val !== '_all').forEach((value) => {
         valueLabels.push(vocabularyLabels[value]);
       });
     }

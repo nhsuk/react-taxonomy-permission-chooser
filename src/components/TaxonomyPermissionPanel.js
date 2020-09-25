@@ -36,42 +36,44 @@ function TaxonomyPermissionPanel(props) {
   const classes = useStyles();
   let taxonomyPermissionInheritParentLoaded = false;
 
-  // check globalPermissionFieldId exists and get value
-  if (props.globalPermissionFieldId) {
-    if (gloablPermissionField) {
-      if (gloablPermissionField.value && !permission) {
-        setPermission(gloablPermissionField.value);
+  if (props.permissionType === 'page') {
+    // check globalPermissionFieldId exists and get value
+    if (props.globalPermissionFieldId) {
+      if (gloablPermissionField) {
+        if (gloablPermissionField.value && !permission) {
+          setPermission(gloablPermissionField.value);
+        }
+      } else {
+        errorMessages.push({
+          code: `missing-elt-${props.globalPermissionFieldId}`,
+          text: `Missing element id: ${props.globalPermissionFieldId}`,
+        });
       }
     } else {
       errorMessages.push({
-        code: `missing-elt-${props.globalPermissionFieldId}`,
-        text: `Missing element id: ${props.globalPermissionFieldId}`,
+        code: `missing-id-${props.globalPermissionFieldId}`,
+        text: 'Missing globalPermissionFieldId',
       });
     }
-  } else {
-    errorMessages.push({
-      code: `missing-id-${props.globalPermissionFieldId}`,
-      text: 'Missing globalPermissionFieldId',
-    });
-  }
 
-  // check inheritPermissionFieldId exists and get value
-  if (props.inheritPermissionFieldId) {
-    if (inheritPermissionField) {
-      if (inheritPermissionField.value && !inheritPermission) {
-        setInheritPermission(inheritPermissionField.value);
+    // check inheritPermissionFieldId exists and get value
+    if (props.inheritPermissionFieldId) {
+      if (inheritPermissionField) {
+        if (inheritPermissionField.value && !inheritPermission) {
+          setInheritPermission(inheritPermissionField.value);
+        }
+      } else {
+        errorMessages.push({
+          code: `missing-elt-${props.inheritPermissionFieldId}`,
+          text: `Missing element id: ${props.inheritPermissionFieldId}`,
+        });
       }
     } else {
       errorMessages.push({
-        code: `missing-elt-${props.inheritPermissionFieldId}`,
-        text: `Missing element id: ${props.inheritPermissionFieldId}`,
+        code: `missing-id-${props.inheritPermissionFieldId}`,
+        text: 'Missing inheritPermissionFieldId',
       });
     }
-  } else {
-    errorMessages.push({
-      code: `missing-id-${props.inheritPermissionFieldId}`,
-      text: 'Missing inheritPermissionFieldId',
-    });
   }
 
   // check taxonomyPermissionJsonId exists and get value
@@ -99,6 +101,19 @@ function TaxonomyPermissionPanel(props) {
       vocabularyLabels[vocabulary.code] = vocabulary.label;
     });
   });
+
+  // init taxonomyPermissionJson
+  actions.forEach((action) => {
+    if (!(action.code in taxonomyPermissionStore)) {
+      taxonomyPermissionStore[action.code] = {};
+    }
+    props.vocabularyGroups.forEach((group) => {
+      if (!(group.code in taxonomyPermissionStore[action.code])) {
+        taxonomyPermissionStore[action.code][group.code] = ['_all'];
+      }
+    });
+  });
+  taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
 
   function onChangeGlobalPermission(e) {
     setPermission(e.target.value);

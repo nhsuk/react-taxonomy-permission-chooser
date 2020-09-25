@@ -14,6 +14,10 @@ const TaxonomyContext = ({ value, children }) => {
       case 'ADD':
         taxonomyPermissionStore[action.actionCode] = taxonomyPermissionStore[action.actionCode] || {};
         taxonomyPermissionStore[action.actionCode][action.groupCode] = taxonomyPermissionStore[action.actionCode][action.groupCode] || [];
+        if (taxonomyPermissionStore[action.actionCode][action.groupCode].length === 1
+          && taxonomyPermissionStore[action.actionCode][action.groupCode][0] === '_all') {
+          taxonomyPermissionStore[action.actionCode][action.groupCode] = [];
+        }
         if (taxonomyPermissionStore[action.actionCode][action.groupCode].indexOf(action.item) === -1) {
           taxonomyPermissionStore[action.actionCode][action.groupCode].push(action.item);
         }
@@ -25,20 +29,12 @@ const TaxonomyContext = ({ value, children }) => {
           (item) => item !== action.item,
         );
         if (taxonomyPermissionStore[action.actionCode][action.groupCode].length === 0) {
-          delete taxonomyPermissionStore[action.actionCode][action.groupCode];
-        }
-        if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
-          delete taxonomyPermissionStore[action.actionCode];
+          taxonomyPermissionStore[action.actionCode][action.groupCode] = ['_all'];
         }
         taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
       case 'REMOVE_ALL_VOCABULARIES':
-        if (Object.keys(taxonomyPermissionStore).length !== 0) {
-          delete taxonomyPermissionStore[action.actionCode][action.groupCode];
-          if (Object.keys(taxonomyPermissionStore[action.actionCode]).length === 0) {
-            delete taxonomyPermissionStore[action.actionCode];
-          }
-        }
+        taxonomyPermissionStore[action.actionCode][action.groupCode] = ['_all'];
         taxonomyPermissionJson.value = JSON.stringify(taxonomyPermissionStore);
         return { ...reducerState, taxonomyPermissionStore };
       default:
